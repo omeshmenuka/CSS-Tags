@@ -1,0 +1,1872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intermediate HTML & CSS Concepts</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-2: #334155;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-2: #818cf8;
+      --success: #34d399;
+      --warning: #fbbf24;
+      --danger: #f87171;
+      --code-bg: #0b1220;
+      --border: #475569;
+      --radius: 12px;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .presentation { display: flex; height: 100vh; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .sidebar-header {
+      padding: 1.25rem 1.25rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-header h1 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+    }
+
+    .sidebar-header p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    .nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.75rem 0;
+    }
+
+    .nav-section { margin-bottom: 0.5rem; }
+
+    .nav-section-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      padding: 0.5rem 1.25rem 0.25rem;
+      font-weight: 600;
+    }
+
+    .nav-item {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 0.45rem 1.25rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border-left: 3px solid transparent;
+    }
+
+    .nav-item:hover {
+      color: var(--text);
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.12);
+      border-left-color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Main */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slides-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      padding: 2.2rem 2.8rem;
+      overflow-y: auto;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(30px);
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 1.5rem;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+
+    .progress-info {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .progress-info strong { color: var(--text); }
+
+    .btn-group { display: flex; gap: 0.6rem; }
+
+    .btn {
+      padding: 0.5rem 1.1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #0f172a;
+    }
+
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #0f172a;
+    }
+
+    .btn-primary:hover:not(:disabled) { background: #7dd3fc; }
+
+    /* Typography */
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      letter-spacing: -0.03em;
+      color: var(--text);
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin: 1.4rem 0 0.5rem;
+      color: var(--accent);
+    }
+
+    h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 1rem 0 0.35rem;
+      color: var(--accent-2);
+    }
+
+    p {
+      margin-bottom: 0.8rem;
+      color: var(--text-muted);
+      max-width: 75ch;
+    }
+
+    ul, ol {
+      margin: 0.5rem 0 0.9rem 1.3rem;
+      color: var(--text-muted);
+    }
+
+    li { margin-bottom: 0.3rem; }
+
+    strong { color: var(--text); }
+
+    code {
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.86em;
+      background: var(--code-bg);
+      padding: 0.12em 0.35em;
+      border-radius: 4px;
+      color: #7dd3fc;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.9rem 1.1rem;
+      overflow-x: auto;
+      margin: 0.7rem 0 1.1rem;
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      color: #e2e8f0;
+    }
+
+    .tag { color: #f472b6; }
+    .attr { color: #34d399; }
+    .highlight { color: #fbbf24; }
+    .comment { color: #64748b; }
+
+    /* Components */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem;
+      margin: 0.8rem 0;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 0.9rem;
+      margin: 1rem 0;
+    }
+
+    .demo-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem;
+      margin: 0.9rem 0;
+    }
+
+    .demo-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.65rem;
+      font-weight: 600;
+    }
+
+    .code-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin: 1rem 0 0.35rem;
+      font-weight: 600;
+    }
+
+    /* Title slide */
+    .title-slide {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      height: 100%;
+    }
+
+    .title-slide h2 {
+      font-size: 2.6rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.6rem;
+    }
+
+    .title-slide .subtitle {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      margin-bottom: 1.8rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.28rem 0.7rem;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-bottom: 1.3rem;
+    }
+
+    /* Live demos */
+    .svg-demo {
+      display: flex;
+      gap: 1.8rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .table-demo table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    .table-demo th,
+    .table-demo td {
+      border: 1px solid var(--border);
+      padding: 0.55rem 0.8rem;
+      text-align: left;
+    }
+
+    .table-demo th {
+      background: var(--surface-2);
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .table-demo tr:nth-child(even) {
+      background: rgba(255,255,255,0.03);
+    }
+
+    /* Form */
+    .form-demo { max-width: 400px; }
+
+    .form-group { margin-bottom: 0.9rem; }
+
+    .form-group label {
+      display: block;
+      font-size: 0.84rem;
+      margin-bottom: 0.3rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.88rem;
+      transition: border-color 0.15s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+    }
+
+    .form-group input:invalid:not(:placeholder-shown) {
+      border-color: var(--danger);
+    }
+
+    .form-group input:valid:not(:placeholder-shown) {
+      border-color: var(--success);
+    }
+
+    .error-msg {
+      font-size: 0.76rem;
+      color: var(--danger);
+      margin-top: 0.2rem;
+      display: none;
+    }
+
+    .form-group input:invalid:not(:placeholder-shown) + .error-msg {
+      display: block;
+    }
+
+    /* Grid demos */
+    .grid-demo {
+      display: grid;
+      gap: 0.55rem;
+      margin: 0.8rem 0;
+    }
+
+    .grid-item {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.9rem;
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 500;
+    }
+
+    .grid-basic { grid-template-columns: repeat(3, 1fr); }
+
+    .grid-areas {
+      grid-template-columns: 1fr 2fr 1fr;
+      grid-template-rows: auto 1fr auto;
+      grid-template-areas:
+        "header header header"
+        "sidebar main aside"
+        "footer footer footer";
+      min-height: 200px;
+    }
+
+    .grid-areas .header { grid-area: header; background: #1e3a5f; }
+    .grid-areas .sidebar { grid-area: sidebar; background: #1e3a3a; }
+    .grid-areas .main { grid-area: main; background: #2a1e3a; }
+    .grid-areas .aside { grid-area: aside; background: #3a2e1e; }
+    .grid-areas .footer { grid-area: footer; background: #1e2a3a; }
+
+    /* Positioning */
+    .position-demo {
+      position: relative;
+      height: 160px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin: 0.8rem 0;
+    }
+
+    .pos-box {
+      width: 75px;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 600;
+      border-radius: 6px;
+      color: #0f172a;
+    }
+
+    .pos-static { background: #94a3b8; position: static; }
+    .pos-relative { background: #38bdf8; position: relative; top: 18px; left: 28px; }
+    .pos-absolute { background: #818cf8; position: absolute; top: 35px; right: 35px; }
+
+    /* Units */
+    .units-visual {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin: 0.9rem 0;
+    }
+
+    .unit-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.7rem 0.9rem;
+      text-align: center;
+      min-width: 90px;
+    }
+
+    .unit-box .size {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .unit-box .label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.3rem;
+      margin: 0.9rem 0;
+    }
+
+    @media (max-width: 900px) {
+      .two-col { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .slide { padding: 1.4rem; }
+    }
+
+    .keyboard-hint {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-left: 0.9rem;
+    }
+
+    kbd {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.08rem 0.3rem;
+      font-size: 0.72rem;
+      font-family: inherit;
+    }
+
+    /* Admin dashboard */
+    .admin-dash {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      grid-template-rows: 48px 1fr;
+      grid-template-areas:
+        "side top"
+        "side content";
+      height: 260px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      font-size: 0.78rem;
+    }
+
+    .admin-dash .side {
+      grid-area: side;
+      background: #1e293b;
+      padding: 0.7rem;
+      border-right: 1px solid var(--border);
+    }
+
+    .admin-dash .top {
+      grid-area: top;
+      background: #0f172a;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 0.9rem;
+      justify-content: space-between;
+    }
+
+    .admin-dash .content {
+      grid-area: content;
+      background: #0b1220;
+      padding: 0.9rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.65rem;
+    }
+
+    .admin-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.7rem;
+    }
+
+    .admin-card h5 {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .admin-card .value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .nav-link {
+      display: block;
+      padding: 0.35rem 0.55rem;
+      color: var(--text-muted);
+      border-radius: 6px;
+      margin-bottom: 0.15rem;
+      font-size: 0.78rem;
+    }
+
+    .nav-link.active {
+      background: rgba(56,189,248,0.15);
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="presentation">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1>HTML & CSS Intermediate</h1>
+        <p>Interactive Presentation + Code</p>
+      </div>
+      <nav class="nav" id="nav"></nav>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+      <div class="slides-container" id="slides">
+
+        <!-- SLIDE 0: Title -->
+        <section class="slide active" data-title="Title">
+          <div class="title-slide">
+            <span class="badge">Interactive Walkthrough + Full Code Samples</span>
+            <h2>Intermediate HTML & CSS</h2>
+            <p class="subtitle">Every concept includes clear explanations + complete sample code</p>
+            <p>Use the sidebar or arrow keys / buttons to navigate.<br>
+               Each slide now has ready-to-use HTML & CSS examples.</p>
+            <div style="margin-top: 1.8rem; display: flex; gap: 0.9rem; flex-wrap: wrap;">
+              <div class="unit-box"><div class="size">HTML</div><div class="label">SVG • Tables</div></div>
+              <div class="unit-box"><div class="size">CSS</div><div class="label">Units • Selectors • Positioning</div></div>
+              <div class="unit-box"><div class="size">Forms</div><div class="label">Validation • Sign-up</div></div>
+              <div class="unit-box"><div class="size">Grid</div><div class="label">Layout • Dashboard</div></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 1: HTML Introduction -->
+        <section class="slide" data-title="HTML Introduction" data-section="HTML">
+          <h2>Intermediate HTML Concepts</h2>
+          <p>Moving beyond basic tags into semantic structure, graphics, and data presentation.</p>
+
+          <div class="card-grid">
+            <div class="card">
+              <h4>What we already know</h4>
+              <ul>
+                <li>Headings, paragraphs, lists</li>
+                <li>Links & images</li>
+                <li>Basic forms</li>
+                <li>Semantic tags (<code>header</code>, <code>nav</code>, <code>main</code>, <code>footer</code>)</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h4>What we will master</h4>
+              <ul>
+                <li><strong>SVG</strong> – scalable vector graphics</li>
+                <li><strong>Tables</strong> – structured data</li>
+                <li>Better form controls & validation</li>
+                <li>Accessibility best practices</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="code-label">Sample – Semantic page skeleton</div>
+          <pre><code>&lt;!DOCTYPE html&gt;
+&lt;<span class="tag">html</span> <span class="attr">lang</span>=<span class="highlight">"en"</span>&gt;
+&lt;<span class="tag">head</span>&gt;
+  &lt;<span class="tag">meta</span> <span class="attr">charset</span>=<span class="highlight">"UTF-8"</span>&gt;
+  &lt;<span class="tag">meta</span> <span class="attr">name</span>=<span class="highlight">"viewport"</span> <span class="attr">content</span>=<span class="highlight">"width=device-width, initial-scale=1.0"</span>&gt;
+  &lt;<span class="tag">title</span>&gt;My Intermediate Page&lt;/<span class="tag">title</span>&gt;
+&lt;/<span class="tag">head</span>&gt;
+&lt;<span class="tag">body</span>&gt;
+  &lt;<span class="tag">header</span>&gt;
+    &lt;<span class="tag">nav</span>&gt;...&lt;/<span class="tag">nav</span>&gt;
+  &lt;/<span class="tag">header</span>&gt;
+
+  &lt;<span class="tag">main</span>&gt;
+    &lt;<span class="tag">article</span>&gt;
+      &lt;<span class="tag">h1</span>&gt;Article Title&lt;/<span class="tag">h1</span>&gt;
+      &lt;<span class="tag">p</span>&gt;Content goes here...&lt;/<span class="tag">p</span>&gt;
+    &lt;/<span class="tag">article</span>&gt;
+  &lt;/<span class="tag">main</span>&gt;
+
+  &lt;<span class="tag">footer</span>&gt;
+    &lt;<span class="tag">p</span>&gt;&amp;copy; 2026 My Site&lt;/<span class="tag">p</span>&gt;
+  &lt;/<span class="tag">footer</span>&gt;
+&lt;/<span class="tag">body</span>&gt;
+&lt;/<span class="tag">html</span>&gt;</code></pre>
+        </section>
+
+        <!-- SLIDE 2: SVG -->
+        <section class="slide" data-title="SVG" data-section="HTML">
+          <h2>SVG – Scalable Vector Graphics</h2>
+          <p>SVG is an XML-based format for vector graphics. It stays sharp at any size and can be styled/animated with CSS.</p>
+
+          <div class="code-label">Sample – Basic circle with text</div>
+          <pre><code>&lt;<span class="tag">svg</span> <span class="attr">width</span>=<span class="highlight">"120"</span> <span class="attr">height</span>=<span class="highlight">"120"</span> <span class="attr">viewBox</span>=<span class="highlight">"0 0 120 120"</span>&gt;
+  &lt;<span class="tag">circle</span> <span class="attr">cx</span>=<span class="highlight">"60"</span> <span class="attr">cy</span>=<span class="highlight">"60"</span> <span class="attr">r</span>=<span class="highlight">"50"</span>
+          <span class="attr">fill</span>=<span class="highlight">"#38bdf8"</span> <span class="attr">stroke</span>=<span class="highlight">"#0f172a"</span> <span class="attr">stroke-width</span>=<span class="highlight">"4"</span> /&gt;
+  &lt;<span class="tag">text</span> <span class="attr">x</span>=<span class="highlight">"60"</span> <span class="attr">y</span>=<span class="highlight">"68"</span> <span class="attr">text-anchor</span>=<span class="highlight">"middle"</span>
+        <span class="attr">fill</span>=<span class="highlight">"#0f172a"</span> <span class="attr">font-size</span>=<span class="highlight">"22"</span> <span class="attr">font-weight</span>=<span class="highlight">"bold"</span>&gt;SVG&lt;/<span class="tag">text</span>&gt;
+&lt;/<span class="tag">svg</span>&gt;</code></pre>
+
+          <div class="code-label">Sample – Multiple shapes</div>
+          <pre><code>&lt;<span class="tag">svg</span> <span class="attr">width</span>=<span class="highlight">"200"</span> <span class="attr">height</span>=<span class="highlight">"120"</span> <span class="attr">viewBox</span>=<span class="highlight">"0 0 200 120"</span>&gt;
+  &lt;<span class="tag">rect</span> <span class="attr">x</span>=<span class="highlight">"10"</span> <span class="attr">y</span>=<span class="highlight">"20"</span> <span class="attr">width</span>=<span class="highlight">"60"</span> <span class="attr">height</span>=<span class="highlight">"60"</span>
+        <span class="attr">rx</span>=<span class="highlight">"8"</span> <span class="attr">fill</span>=<span class="highlight">"#818cf8"</span> /&gt;
+  &lt;<span class="tag">circle</span> <span class="attr">cx</span>=<span class="highlight">"130"</span> <span class="attr">cy</span>=<span class="highlight">"50"</span> <span class="attr">r</span>=<span class="highlight">"35"</span> <span class="attr">fill</span>=<span class="highlight">"#34d399"</span> /&gt;
+  &lt;<span class="tag">polygon</span> <span class="attr">points</span>=<span class="highlight">"160,110 190,50 200,110"</span> <span class="attr">fill</span>=<span class="highlight">"#fbbf24"</span> /&gt;
+  &lt;<span class="tag">path</span> <span class="attr">d</span>=<span class="highlight">"M20 100 Q60 40 100 100"</span> <span class="attr">fill</span>=<span class="highlight">"none"</span>
+        <span class="attr">stroke</span>=<span class="highlight">"#f472b6"</span> <span class="attr">stroke-width</span>=<span class="highlight">"3"</span> /&gt;
+&lt;/<span class="tag">svg</span>&gt;</code></pre>
+
+          <div class="demo-box">
+            <div class="demo-label">Live SVG Demo</div>
+            <div class="svg-demo">
+              <svg width="110" height="110" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="50" fill="#38bdf8" stroke="#0f172a" stroke-width="4"/>
+                <text x="60" y="68" text-anchor="middle" fill="#0f172a" font-size="20" font-weight="bold">SVG</text>
+              </svg>
+              <svg width="130" height="90" viewBox="0 0 140 100">
+                <rect x="10" y="20" width="50" height="50" rx="8" fill="#818cf8"/>
+                <circle cx="100" cy="45" r="28" fill="#34d399"/>
+                <polygon points="70,90 90,50 110,90" fill="#fbbf24"/>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 3: Tables -->
+        <section class="slide" data-title="Tables" data-section="HTML">
+          <h2>HTML Tables</h2>
+          <p>Use tables for tabular data only — never for page layout.</p>
+
+          <div class="code-label">Sample – Complete accessible table</div>
+          <pre><code>&lt;<span class="tag">table</span>&gt;
+  &lt;<span class="tag">caption</span>&gt;Q1 Sales Report&lt;/<span class="tag">caption</span>&gt;
+  &lt;<span class="tag">thead</span>&gt;
+    &lt;<span class="tag">tr</span>&gt;
+      &lt;<span class="tag">th</span> <span class="attr">scope</span>=<span class="highlight">"col"</span>&gt;Month&lt;/<span class="tag">th</span>&gt;
+      &lt;<span class="tag">th</span> <span class="attr">scope</span>=<span class="highlight">"col"</span>&gt;Revenue&lt;/<span class="tag">th</span>&gt;
+      &lt;<span class="tag">th</span> <span class="attr">scope</span>=<span class="highlight">"col"</span>&gt;Orders&lt;/<span class="tag">th</span>&gt;
+      &lt;<span class="tag">th</span> <span class="attr">scope</span>=<span class="highlight">"col"</span>&gt;Growth&lt;/<span class="tag">th</span>&gt;
+    &lt;/<span class="tag">tr</span>&gt;
+  &lt;/<span class="tag">thead</span>&gt;
+  &lt;<span class="tag">tbody</span>&gt;
+    &lt;<span class="tag">tr</span>&gt;
+      &lt;<span class="tag">td</span>&gt;January&lt;/<span class="tag">td</span>&gt;
+      &lt;<span class="tag">td</span>&gt;$14,200&lt;/<span class="tag">td</span>&gt;
+      &lt;<span class="tag">td</span>&gt;312&lt;/<span class="tag">td</span>&gt;
+      &lt;<span class="tag">td</span>&gt;+12%&lt;/<span class="tag">td</span>&gt;
+    &lt;/<span class="tag">tr</span>&gt;
+    &lt;<span class="tag">tr</span>&gt;
+      &lt;<span class="tag">td</span>&gt;February&lt;/<span class="tag">td</span>&gt;
+      &lt;<span class="tag">td</span>&gt;$16,850&lt;/<span class="tag">td</span>&gt;
+      &lt;<span class="tag">td</span>&gt;358&lt;/<span class="tag">td</span>&gt;
+      &lt;<span class="tag">td</span>&gt;+18%&lt;/<span class="tag">td</span>&gt;
+    &lt;/<span class="tag">tr</span>&gt;
+  &lt;/<span class="tag">tbody</span>&gt;
+  &lt;<span class="tag">tfoot</span>&gt;
+    &lt;<span class="tag">tr</span>&gt;
+      &lt;<span class="tag">th</span> <span class="attr">scope</span>=<span class="highlight">"row"</span>&gt;Total&lt;/<span class="tag">th</span>&gt;
+      &lt;<span class="tag">td</span>&gt;$31,050&lt;/<span class="tag">td</span>&gt;
+      &lt;<span class="tag">td</span>&gt;670&lt;/<span class="tag">td</span>&gt;
+      &lt;<span class="tag">td</span>&gt;—&lt;/<span class="tag">td</span>&gt;
+    &lt;/<span class="tag">tr</span>&gt;
+  &lt;/<span class="tag">tfoot</span>&gt;
+&lt;/<span class="tag">table</span>&gt;</code></pre>
+
+          <div class="demo-box table-demo">
+            <div class="demo-label">Live Table</div>
+            <table>
+              <caption style="caption-side:top; text-align:left; margin-bottom:0.4rem; color:var(--text-muted);">Q1 Sales Report</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Month</th>
+                  <th scope="col">Revenue</th>
+                  <th scope="col">Orders</th>
+                  <th scope="col">Growth</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>January</td><td>$14,200</td><td>312</td><td style="color:var(--success)">+12%</td></tr>
+                <tr><td>February</td><td>$16,850</td><td>358</td><td style="color:var(--success)">+18%</td></tr>
+                <tr><td>March</td><td>$15,100</td><td>341</td><td style="color:var(--warning)">−4%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- SLIDE 4: Default Styles -->
+        <section class="slide" data-title="Default Styles" data-section="CSS">
+          <h2>Default Styles (User Agent Stylesheet)</h2>
+          <p>Browsers apply default styles. Understanding them helps you write predictable CSS.</p>
+
+          <div class="code-label">Sample – Modern CSS Reset</div>
+          <pre><code>/* Modern minimal reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}</code></pre>
+
+          <div class="code-label">Sample – What browsers apply by default</div>
+          <pre><code>/* Typical browser defaults (simplified) */
+body { margin: 8px; }
+h1 { font-size: 2em; margin: 0.67em 0; font-weight: bold; }
+ul, ol { padding-left: 40px; }
+a { color: blue; text-decoration: underline; }
+button, input { font-family: system-ui; }</code></pre>
+        </section>
+
+        <!-- SLIDE 5: CSS Units -->
+        <section class="slide" data-title="CSS Units" data-section="CSS">
+          <h2>CSS Units</h2>
+          <p>Choosing the right unit is a core intermediate skill.</p>
+
+          <div class="units-visual">
+            <div class="unit-box"><div class="size">px</div><div class="label">Absolute</div></div>
+            <div class="unit-box"><div class="size">%</div><div class="label">Parent</div></div>
+            <div class="unit-box"><div class="size">em</div><div class="label">Font size</div></div>
+            <div class="unit-box"><div class="size">rem</div><div class="label">Root font</div></div>
+            <div class="unit-box"><div class="size">vw/vh</div><div class="label">Viewport</div></div>
+            <div class="unit-box"><div class="size">ch</div><div class="label">Character</div></div>
+          </div>
+
+          <div class="code-label">Sample – Practical unit usage</div>
+          <pre><code>html {
+  font-size: 16px;               /* 1rem = 16px */
+}
+
+h1 {
+  font-size: 2.5rem;             /* 40px */
+  margin-bottom: 0.75rem;
+}
+
+.card {
+  padding: 1.5rem;               /* 24px */
+  max-width: 65ch;               /* comfortable reading width */
+  border-radius: 0.75rem;
+}
+
+.hero {
+  height: 80vh;                  /* 80% of viewport height */
+  padding: 2rem 5vw;
+}
+
+.sidebar {
+  width: 280px;                  /* fixed width is fine for sidebars */
+}
+
+.fluid-container {
+  width: min(100% - 2rem, 1100px);
+  margin-inline: auto;
+}</code></pre>
+        </section>
+
+        <!-- SLIDE 6: More Text Styles -->
+        <section class="slide" data-title="More Text Styles" data-section="CSS">
+          <h2>More Text Styles</h2>
+          <p>Rich typography control beyond basic font-size and color.</p>
+
+          <div class="code-label">Sample – Typography utilities</div>
+          <pre><code>.title {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: #f1f5f9;
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #38bdf8;
+}
+
+.clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}</code></pre>
+
+          <div class="demo-box">
+            <p style="font-weight:700; letter-spacing:-0.03em; font-size:1.35rem; color:var(--text); margin-bottom:0.4rem;">Tight heading with negative tracking</p>
+            <p style="color:var(--text-muted); font-size:0.9rem;">Muted secondary text that creates hierarchy.</p>
+            <p style="text-transform:uppercase; letter-spacing:0.08em; font-size:0.72rem; color:var(--accent); margin-top:0.7rem;">Uppercase label</p>
+          </div>
+        </section>
+
+        <!-- SLIDE 7: More CSS Properties -->
+        <section class="slide" data-title="More CSS Properties" data-section="CSS">
+          <h2>More Useful CSS Properties</h2>
+          <p>Properties that appear constantly in modern interfaces.</p>
+
+          <div class="code-label">Sample – Common modern properties</div>
+          <pre><code>.card {
+  background: #1e293b;
+  border: 1px solid #475569;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+}
+
+.hero-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.fluid-title {
+  font-size: clamp(1.5rem, 4vw, 3rem);
+}
+
+.button {
+  cursor: pointer;
+  accent-color: #38bdf8;
+}
+
+.scroll-container {
+  scroll-behavior: smooth;
+  overflow-y: auto;
+}</code></pre>
+        </section>
+
+        <!-- SLIDE 8: Advanced Selectors -->
+        <section class="slide" data-title="Advanced Selectors" data-section="CSS">
+          <h2>Advanced Selectors</h2>
+          <p>Powerful selectors reduce extra classes and keep CSS maintainable.</p>
+
+          <div class="code-label">Sample – Attribute, pseudo-class & combinators</div>
+          <pre><code>/* Attribute selectors */
+input[type="email"] { border-color: #38bdf8; }
+a[target="_blank"]::after { content: " ↗"; }
+
+/* Pseudo-classes */
+a:hover,
+a:focus-visible { color: #7dd3fc; }
+li:nth-child(odd) { background: rgba(255,255,255,0.03); }
+tr:nth-child(even) { background: #1e293b; }
+input:invalid { border-color: #f87171; }
+input:valid { border-color: #34d399; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Pseudo-elements */
+p::first-line { font-weight: 600; }
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, #38bdf8, #818cf8);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+}
+
+/* Combinators */
+article > p { margin-bottom: 1rem; }   /* direct child */
+h2 + p { margin-top: 0.5rem; }         /* adjacent sibling */
+h2 ~ p { color: #94a3b8; }             /* general sibling */</code></pre>
+
+          <div class="code-label">Sample – Modern :is(), :where(), :has()</div>
+          <pre><code>:is(h1, h2, h3, h4) {
+  line-height: 1.2;
+  color: #f1f5f9;
+}
+
+:where(ul, ol) {
+  padding-left: 1.25rem;
+}
+
+/* Style parent based on child */
+.card:has(img) {
+  padding-top: 0;
+}
+
+label:has(+ input:invalid) {
+  color: #f87171;
+}
+
+/* Form group that contains a required field */
+.form-group:has([required]) label::after {
+  content: " *";
+  color: #f87171;
+}</code></pre>
+        </section>
+
+        <!-- SLIDE 9: Positioning -->
+        <section class="slide" data-title="Positioning" data-section="CSS">
+          <h2>CSS Positioning</h2>
+          <p>The <code>position</code> property changes how an element participates in the document flow.</p>
+
+          <div class="code-label">Sample – All position values</div>
+          <pre><code>/* Static – normal flow (default) */
+.box-static {
+  position: static;
+}
+
+/* Relative – stays in flow, can be offset */
+.box-relative {
+  position: relative;
+  top: 20px;
+  left: 30px;
+}
+
+/* Absolute – removed from flow, positioned against nearest positioned ancestor */
+.box-absolute {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+}
+
+/* Fixed – relative to the viewport */
+.box-fixed {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+/* Sticky – hybrid of relative + fixed */
+.box-sticky {
+  position: sticky;
+  top: 0;
+  background: #1e293b;
+  z-index: 10;
+}
+
+/* Creating a containing block */
+.parent {
+  position: relative; /* now absolute children position against this */
+}</code></pre>
+
+          <div class="demo-box">
+            <div class="demo-label">Visual demonstration</div>
+            <div class="position-demo">
+              <div class="pos-box pos-static">static</div>
+              <div class="pos-box pos-relative">relative</div>
+              <div class="pos-box pos-absolute">absolute</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 10: CSS Functions -->
+        <section class="slide" data-title="CSS Functions" data-section="CSS">
+          <h2>CSS Functions</h2>
+          <p>Functions make values dynamic and flexible.</p>
+
+          <div class="code-label">Sample – Essential functions</div>
+          <pre><code>/* calc() – mix units */
+.sidebar {
+  width: calc(300px + 2vw);
+}
+.main {
+  width: calc(100% - 300px);
+}
+
+/* min() / max() / clamp() */
+.container {
+  width: min(100% - 2rem, 1100px);
+  margin-inline: auto;
+}
+
+.title {
+  font-size: clamp(1.5rem, 4vw, 3rem); /* fluid type */
+}
+
+.card {
+  padding: max(1rem, 2vw);
+}
+
+/* color functions */
+.button {
+  background: color-mix(in srgb, #38bdf8 80%, black);
+}
+
+/* Modern fluid spacing */
+.section {
+  padding-block: clamp(2rem, 5vw, 4rem);
+}</code></pre>
+
+          <div class="demo-box">
+            <div class="demo-label">clamp() in action – resize the browser window</div>
+            <p style="font-size: clamp(1rem, 2.5vw, 1.55rem); color: var(--text);">
+              This text scales smoothly between 1rem and 1.55rem.
+            </p>
+          </div>
+        </section>
+
+        <!-- SLIDE 11: Custom Properties -->
+        <section class="slide" data-title="Custom Properties" data-section="CSS">
+          <h2>CSS Custom Properties (Variables)</h2>
+          <p>Store values once and reuse them. They are live and can be changed at runtime.</p>
+
+          <div class="code-label">Sample – Design tokens + usage</div>
+          <pre><code>:root {
+  /* Colors */
+  --color-bg: #0f172a;
+  --color-surface: #1e293b;
+  --color-primary: #38bdf8;
+  --color-text: #f1f5f9;
+  --color-muted: #94a3b8;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+
+  /* Other tokens */
+  --radius: 12px;
+  --shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  --font-sans: "Segoe UI", system-ui, sans-serif;
+}
+
+.card {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--space-lg);
+  font-family: var(--font-sans);
+}
+
+/* Local override */
+.card--compact {
+  --space-lg: 0.75rem;
+  padding: var(--space-lg);
+}
+
+/* Fallback value */
+.button {
+  background: var(--color-primary, #3b82f6);
+}</code></pre>
+        </section>
+
+        <!-- SLIDE 12: Browser Compatibility -->
+        <section class="slide" data-title="Browser Compatibility" data-section="CSS">
+          <h2>Browser Compatibility</h2>
+          <p>Check support and provide graceful fallbacks.</p>
+
+          <div class="code-label">Sample – Feature queries & progressive enhancement</div>
+          <pre><code>/* Feature queries */
+@supports (display: grid) {
+  .container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+}
+
+@supports not (display: grid) {
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .container > * {
+    flex: 1 1 300px;
+  }
+}
+
+/* Progressive enhancement */
+.button {
+  background: #38bdf8;                    /* solid fallback */
+  background: linear-gradient(135deg, #38bdf8, #818cf8);
+}
+
+/* Container queries (modern) */
+@supports (container-type: inline-size) {
+  .card-container {
+    container-type: inline-size;
+  }
+  @container (min-width: 400px) {
+    .card { flex-direction: row; }
+  }
+}</code></pre>
+
+          <div class="code-label">Sample – Checking support in JavaScript</div>
+          <pre><code>if (CSS.supports("display", "grid")) {
+  document.body.classList.add("supports-grid");
+}
+
+if (CSS.supports("selector(:has(*))")) {
+  console.log(":has() is supported");
+}</code></pre>
+        </section>
+
+        <!-- SLIDE 13: Frameworks & Preprocessors -->
+        <section class="slide" data-title="Frameworks & Preprocessors" data-section="CSS">
+          <h2>Frameworks & Preprocessors</h2>
+          <p>Tools that speed up development once you know core CSS.</p>
+
+          <div class="code-label">Sample – Native CSS nesting (no preprocessor needed)</div>
+          <pre><code>.card {
+  padding: 1rem;
+  background: #1e293b;
+  border-radius: 12px;
+
+  & h2 {
+    margin-bottom: 0.5rem;
+    color: #f1f5f9;
+  }
+
+  & p {
+    color: #94a3b8;
+  }
+
+  &:hover {
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  }
+
+  & .button {
+    margin-top: 1rem;
+
+    &:disabled {
+      opacity: 0.5;
+    }
+  }
+}</code></pre>
+
+          <div class="code-label">Sample – Tailwind-style utility thinking (concept)</div>
+          <pre><code>/* Instead of writing custom classes for everything,
+   many teams use utility-first approaches */
+
+.flex { display: flex; }
+.items-center { align-items: center; }
+.gap-4 { gap: 1rem; }
+.p-4 { padding: 1rem; }
+.rounded-xl { border-radius: 12px; }
+.bg-surface { background: #1e293b; }
+
+/* Usage */
+&lt;div class="flex items-center gap-4 p-4 rounded-xl bg-surface"&gt;
+  ...
+&lt;/div&gt;</code></pre>
+        </section>
+
+        <!-- SLIDE 14: Form Basics -->
+        <section class="slide" data-title="Form Basics" data-section="Forms">
+          <h2>Form Basics</h2>
+          <p>Forms are how users send data. Structure and accessibility matter.</p>
+
+          <div class="code-label">Sample – Complete basic form</div>
+          <pre><code>&lt;<span class="tag">form</span> <span class="attr">action</span>=<span class="highlight">"/api/register"</span> <span class="attr">method</span>=<span class="highlight">"POST"</span>&gt;
+  &lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="highlight">"form-group"</span>&gt;
+    &lt;<span class="tag">label</span> <span class="attr">for</span>=<span class="highlight">"email"</span>&gt;Email address&lt;/<span class="tag">label</span>&gt;
+    &lt;<span class="tag">input</span>
+      <span class="attr">type</span>=<span class="highlight">"email"</span>
+      <span class="attr">id</span>=<span class="highlight">"email"</span>
+      <span class="attr">name</span>=<span class="highlight">"email"</span>
+      <span class="attr">required</span>
+      <span class="attr">autocomplete</span>=<span class="highlight">"email"</span>
+      <span class="attr">placeholder</span>=<span class="highlight">"you@example.com"</span>&gt;
+  &lt;/<span class="tag">div</span>&gt;
+
+  &lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="highlight">"form-group"</span>&gt;
+    &lt;<span class="tag">label</span> <span class="attr">for</span>=<span class="highlight">"password"</span>&gt;Password&lt;/<span class="tag">label</span>&gt;
+    &lt;<span class="tag">input</span>
+      <span class="attr">type</span>=<span class="highlight">"password"</span>
+      <span class="attr">id</span>=<span class="highlight">"password"</span>
+      <span class="attr">name</span>=<span class="highlight">"password"</span>
+      <span class="attr">minlength</span>=<span class="highlight">"8"</span>
+      <span class="attr">required</span>
+      <span class="attr">autocomplete</span>=<span class="highlight">"new-password"</span>&gt;
+  &lt;/<span class="tag">div</span>&gt;
+
+  &lt;<span class="tag">button</span> <span class="attr">type</span>=<span class="highlight">"submit"</span>&gt;Create account&lt;/<span class="tag">button</span>&gt;
+&lt;/<span class="tag">form</span>&gt;</code></pre>
+        </section>
+
+        <!-- SLIDE 15: Form Validation -->
+        <section class="slide" data-title="Form Validation" data-section="Forms">
+          <h2>Form Validation</h2>
+          <p>HTML5 gives powerful built-in validation. Combine with CSS for great UX.</p>
+
+          <div class="code-label">Sample – Validation attributes + CSS</div>
+          <pre><code>&lt;!-- HTML --&gt;
+&lt;<span class="tag">input</span>
+  <span class="attr">type</span>=<span class="highlight">"email"</span>
+  <span class="attr">required</span>
+  <span class="attr">minlength</span>=<span class="highlight">"5"</span>
+  <span class="attr">pattern</span>=<span class="highlight">"[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"</span>
+  <span class="attr">title</span>=<span class="highlight">"Enter a valid email"</span>&gt;
+
+&lt;!-- CSS --&gt;
+input:invalid {
+  border-color: #f87171;
+}
+
+input:valid {
+  border-color: #34d399;
+}
+
+input:focus:invalid {
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.25);
+}
+
+input:required:invalid {
+  /* still empty and required */
+}</code></pre>
+
+          <div class="demo-box form-demo">
+            <div class="demo-label">Live Validation – try typing or submitting</div>
+            <form id="validation-demo">
+              <div class="form-group">
+                <label for="demo-email">Email address</label>
+                <input type="email" id="demo-email" name="email" required placeholder="you@example.com" />
+                <div class="error-msg">Please enter a valid email</div>
+              </div>
+              <div class="form-group">
+                <label for="demo-pass">Password (min 8 chars)</label>
+                <input type="password" id="demo-pass" name="password" required minlength="8" placeholder="••••••••" />
+                <div class="error-msg">Password must be at least 8 characters</div>
+              </div>
+              <button type="submit" class="btn btn-primary" style="margin-top:0.4rem;">Submit</button>
+            </form>
+          </div>
+        </section>
+
+        <!-- SLIDE 16: Project Sign-up Form -->
+        <section class="slide" data-title="Project: Sign-up Form" data-section="Forms">
+          <h2>Project: Sign-up Form</h2>
+          <p>Complete accessible sign-up form using everything covered so far.</p>
+
+          <div class="code-label">Sample – Full Sign-up Form HTML</div>
+          <pre><code>&lt;<span class="tag">form</span> <span class="attr">id</span>=<span class="highlight">"signup-form"</span> <span class="attr">novalidate</span>&gt;
+  &lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="highlight">"form-group"</span>&gt;
+    &lt;<span class="tag">label</span> <span class="attr">for</span>=<span class="highlight">"full-name"</span>&gt;Full name&lt;/<span class="tag">label</span>&gt;
+    &lt;<span class="tag">input</span> <span class="attr">type</span>=<span class="highlight">"text"</span> <span class="attr">id</span>=<span class="highlight">"full-name"</span> <span class="attr">name</span>=<span class="highlight">"name"</span>
+           <span class="attr">required</span> <span class="attr">autocomplete</span>=<span class="highlight">"name"</span> <span class="attr">placeholder</span>=<span class="highlight">"Jane Doe"</span>&gt;
+  &lt;/<span class="tag">div</span>&gt;
+
+  &lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="highlight">"form-group"</span>&gt;
+    &lt;<span class="tag">label</span> <span class="attr">for</span>=<span class="highlight">"signup-email"</span>&gt;Email&lt;/<span class="tag">label</span>&gt;
+    &lt;<span class="tag">input</span> <span class="attr">type</span>=<span class="highlight">"email"</span> <span class="attr">id</span>=<span class="highlight">"signup-email"</span> <span class="attr">name</span>=<span class="highlight">"email"</span>
+           <span class="attr">required</span> <span class="attr">autocomplete</span>=<span class="highlight">"email"</span>&gt;
+  &lt;/<span class="tag">div</span>&gt;
+
+  &lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="highlight">"form-group"</span>&gt;
+    &lt;<span class="tag">label</span> <span class="attr">for</span>=<span class="highlight">"signup-password"</span>&gt;Password&lt;/<span class="tag">label</span>&gt;
+    &lt;<span class="tag">input</span> <span class="attr">type</span>=<span class="highlight">"password"</span> <span class="attr">id</span>=<span class="highlight">"signup-password"</span> <span class="attr">name</span>=<span class="highlight">"password"</span>
+           <span class="attr">required</span> <span class="attr">minlength</span>=<span class="highlight">"8"</span> <span class="attr">autocomplete</span>=<span class="highlight">"new-password"</span>&gt;
+  &lt;/<span class="tag">div</span>&gt;
+
+  &lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="highlight">"form-group"</span>&gt;
+    &lt;<span class="tag">label</span> <span class="attr">for</span>=<span class="highlight">"confirm-password"</span>&gt;Confirm password&lt;/<span class="tag">label</span>&gt;
+    &lt;<span class="tag">input</span> <span class="attr">type</span>=<span class="highlight">"password"</span> <span class="attr">id</span>=<span class="highlight">"confirm-password"</span> <span class="attr">name</span>=<span class="highlight">"confirm"</span>
+           <span class="attr">required</span> <span class="attr">minlength</span>=<span class="highlight">"8"</span> <span class="attr">autocomplete</span>=<span class="highlight">"new-password"</span>&gt;
+  &lt;/<span class="tag">div</span>&gt;
+
+  &lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="highlight">"form-group"</span>&gt;
+    &lt;<span class="tag">input</span> <span class="attr">type</span>=<span class="highlight">"checkbox"</span> <span class="attr">id</span>=<span class="highlight">"terms"</span> <span class="attr">name</span>=<span class="highlight">"terms"</span> <span class="attr">required</span>&gt;
+    &lt;<span class="tag">label</span> <span class="attr">for</span>=<span class="highlight">"terms"</span>&gt;I agree to the Terms of Service&lt;/<span class="tag">label</span>&gt;
+  &lt;/<span class="tag">div</span>&gt;
+
+  &lt;<span class="tag">button</span> <span class="attr">type</span>=<span class="highlight">"submit"</span>&gt;Create Account&lt;/<span class="tag">button</span>&gt;
+&lt;/<span class="tag">form</span>&gt;</code></pre>
+
+          <div class="demo-box form-demo" style="max-width:380px;">
+            <div class="demo-label">Live Sign-up Form</div>
+            <form id="signup-form">
+              <div class="form-group">
+                <label for="full-name">Full name</label>
+                <input type="text" id="full-name" name="name" required autocomplete="name" placeholder="Jane Doe" />
+              </div>
+              <div class="form-group">
+                <label for="signup-email">Email</label>
+                <input type="email" id="signup-email" name="email" required autocomplete="email" placeholder="jane@example.com" />
+              </div>
+              <div class="form-group">
+                <label for="signup-password">Password</label>
+                <input type="password" id="signup-password" name="password" required minlength="8" autocomplete="new-password" placeholder="Min. 8 characters" />
+              </div>
+              <div class="form-group">
+                <label for="confirm-password">Confirm password</label>
+                <input type="password" id="confirm-password" name="confirm" required minlength="8" autocomplete="new-password" />
+              </div>
+              <div class="form-group" style="display:flex; align-items:flex-start; gap:0.45rem;">
+                <input type="checkbox" id="terms" name="terms" required style="width:auto; margin-top:0.2rem;" />
+                <label for="terms" style="font-size:0.82rem;">I agree to the Terms of Service</label>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width:100%; margin-top:0.4rem;">Create Account</button>
+            </form>
+          </div>
+        </section>
+
+        <!-- SLIDE 17: Grid Introduction -->
+        <section class="slide" data-title="Introduction to Grid" data-section="Grid">
+          <h2>Introduction to CSS Grid</h2>
+          <p>CSS Grid is a two-dimensional layout system — perfect when you need control over both rows and columns.</p>
+
+          <div class="code-label">Sample – First Grid</div>
+          <pre><code>.container {
+  display: grid;
+  grid-template-columns: 200px 1fr 200px;
+  grid-template-rows: auto 1fr auto;
+  gap: 1rem;
+  min-height: 100vh;
+}
+
+/* Flexbox = 1D (row OR column)
+   Grid     = 2D (rows AND columns) */</code></pre>
+
+          <div class="card-grid">
+            <div class="card">
+              <h4>Use Flexbox for</h4>
+              <ul>
+                <li>Navigation bars</li>
+                <li>Card content alignment</li>
+                <li>Centering items</li>
+                <li>Simple one-directional layouts</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h4>Use Grid for</h4>
+              <ul>
+                <li>Page layouts</li>
+                <li>Dashboards</li>
+                <li>Image galleries</li>
+                <li>Complex 2D arrangements</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 18: Creating a Grid -->
+        <section class="slide" data-title="Creating a Grid" data-section="Grid">
+          <h2>Creating a Grid</h2>
+
+          <div class="code-label">Sample – Defining tracks</div>
+          <pre><code>.grid {
+  display: grid;
+
+  /* Fixed + flexible columns */
+  grid-template-columns: 200px 1fr 2fr;
+
+  /* Equal columns */
+  grid-template-columns: repeat(3, 1fr);
+
+  /* Responsive auto-fit */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+  /* Rows */
+  grid-template-rows: 80px 1fr 60px;
+
+  /* Gap */
+  gap: 1rem;                  /* both row and column */
+  row-gap: 1.5rem;
+  column-gap: 1rem;
+}</code></pre>
+
+          <div class="demo-box">
+            <div class="demo-label">Basic 3-column grid</div>
+            <div class="grid-demo grid-basic">
+              <div class="grid-item">1</div>
+              <div class="grid-item">2</div>
+              <div class="grid-item">3</div>
+              <div class="grid-item">4</div>
+              <div class="grid-item">5</div>
+              <div class="grid-item">6</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 19: Positioning Grid Elements -->
+        <section class="slide" data-title="Positioning Grid Elements" data-section="Grid">
+          <h2>Positioning Grid Elements</h2>
+
+          <div class="code-label">Sample – Line-based placement</div>
+          <pre><code>.item {
+  grid-column: 1 / 3;     /* start line / end line */
+  grid-row: 2 / 4;
+}
+
+.item-span {
+  grid-column: span 2;
+  grid-row: 1 / span 2;
+}</code></pre>
+
+          <div class="code-label">Sample – Named grid areas (best for page layouts)</div>
+          <pre><code>.layout {
+  display: grid;
+  grid-template-columns: 220px 1fr 200px;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "header  header  header"
+    "sidebar main    aside"
+    "footer  footer  footer";
+  min-height: 100vh;
+  gap: 1rem;
+}
+
+.header  { grid-area: header; }
+.sidebar { grid-area: sidebar; }
+.main    { grid-area: main; }
+.aside   { grid-area: aside; }
+.footer  { grid-area: footer; }</code></pre>
+
+          <div class="demo-box">
+            <div class="demo-label">Named areas demo</div>
+            <div class="grid-demo grid-areas">
+              <div class="grid-item header">Header</div>
+              <div class="grid-item sidebar">Sidebar</div>
+              <div class="grid-item main">Main</div>
+              <div class="grid-item aside">Aside</div>
+              <div class="grid-item footer">Footer</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 20: Advanced Grid Properties -->
+        <section class="slide" data-title="Advanced Grid Properties" data-section="Grid">
+          <h2>Advanced Grid Properties</h2>
+
+          <div class="code-label">Sample – Alignment & auto-placement</div>
+          <pre><code>.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+
+  /* Align items inside their cells */
+  justify-items: stretch;   /* start | end | center | stretch */
+  align-items: stretch;
+
+  /* Align the whole grid when extra space exists */
+  justify-content: center;
+  align-content: start;
+
+  /* Auto-generated tracks */
+  grid-auto-rows: minmax(100px, auto);
+  grid-auto-flow: dense;    /* tries to fill holes */
+}
+
+/* Individual item alignment */
+.item {
+  justify-self: center;
+  align-self: end;
+}</code></pre>
+
+          <div class="code-label">Sample – Responsive card grid (no media queries)</div>
+          <pre><code>.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}</code></pre>
+        </section>
+
+        <!-- SLIDE 21: Flexbox + Grid -->
+        <section class="slide" data-title="Flexbox + Grid" data-section="Grid">
+          <h2>Using Flexbox and Grid Together</h2>
+          <p>Best practice: Grid for page structure, Flexbox inside components.</p>
+
+          <div class="code-label">Sample – Combined layout</div>
+          <pre><code>/* Page shell with Grid */
+.page {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  grid-template-rows: 64px 1fr;
+  grid-template-areas:
+    "sidebar header"
+    "sidebar main";
+  min-height: 100vh;
+}
+
+.sidebar { grid-area: sidebar; }
+.header  { grid-area: header; }
+.main    { grid-area: main; }
+
+/* Header content uses Flexbox */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  gap: 1rem;
+}
+
+/* Card inside main also uses Flexbox */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+}</code></pre>
+        </section>
+
+        <!-- SLIDE 22: Admin Dashboard Project -->
+        <section class="slide" data-title="Project: Admin Dashboard" data-section="Grid">
+          <h2>Project: Admin Dashboard</h2>
+          <p>Classic layout using Grid for structure + Flexbox for internal alignment.</p>
+
+          <div class="code-label">Sample – Dashboard HTML structure</div>
+          <pre><code>&lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="highlight">"admin-dash"</span>&gt;
+  &lt;<span class="tag">aside</span> <span class="attr">class</span>=<span class="highlight">"side"</span>&gt;
+    &lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="highlight">"logo"</span>&gt;Dashboard&lt;/<span class="tag">div</span>&gt;
+    &lt;<span class="tag">nav</span>&gt;
+      &lt;<span class="tag">a</span> <span class="attr">class</span>=<span class="highlight">"nav-link active"</span>&gt;Overview&lt;/<span class="tag">a</span>&gt;
+      &lt;<span class="tag">a</span> <span class="attr">class</span>=<span class="highlight">"nav-link"</span>&gt;Analytics&lt;/<span class="tag">a</span>&gt;
+      &lt;<span class="tag">a</span> <span class="attr">class</span>=<span class="highlight">"nav-link"</span>&gt;Users&lt;/<span class="tag">a</span>&gt;
+    &lt;/<span class="tag">nav</span>&gt;
+  &lt;/<span class="tag">aside</span>&gt;
+
+  &lt;<span class="tag">header</span> <span class="attr">class</span>=<span class="highlight">"top"</span>&gt;
+    &lt;<span class="tag">h1</span>&gt;Overview&lt;/<span class="tag">h1</span>&gt;
+    &lt;<span class="tag">span</span>&gt;Oct 2026&lt;/<span class="tag">span</span>&gt;
+  &lt;/<span class="tag">header</span>&gt;
+
+  &lt;<span class="tag">main</span> <span class="attr">class</span>=<span class="highlight">"content"</span>&gt;
+    &lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="highlight">"admin-card"</span>&gt;...&lt;/<span class="tag">div</span>&gt;
+    &lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="highlight">"admin-card"</span>&gt;...&lt;/<span class="tag">div</span>&gt;
+    &lt;<span class="tag">div</span> <span class="attr">class</span>=<span class="highlight">"admin-card"</span>&gt;...&lt;/<span class="tag">div</span>&gt;
+  &lt;/<span class="tag">main</span>&gt;
+&lt;/<span class="tag">div</span>&gt;</code></pre>
+
+          <div class="code-label">Sample – Dashboard CSS</div>
+          <pre><code>.admin-dash {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  grid-template-rows: 56px 1fr;
+  grid-template-areas:
+    "side top"
+    "side content";
+  min-height: 100vh;
+}
+
+.side    { grid-area: side; }
+.top     { grid-area: top; display: flex; align-items: center; justify-content: space-between; }
+.content {
+  grid-area: content;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 1.25rem;
+}</code></pre>
+
+          <div class="demo-box" style="padding:0.9rem;">
+            <div class="demo-label">Live Mini Admin Dashboard</div>
+            <div class="admin-dash">
+              <div class="side">
+                <div style="font-weight:700; margin-bottom:0.9rem; color:var(--accent);">Dashboard</div>
+                <a class="nav-link active">Overview</a>
+                <a class="nav-link">Analytics</a>
+                <a class="nav-link">Users</a>
+                <a class="nav-link">Settings</a>
+              </div>
+              <div class="top">
+                <span style="font-weight:600;">Overview</span>
+                <span style="color:var(--text-muted); font-size:0.78rem;">Oct 2026</span>
+              </div>
+              <div class="content">
+                <div class="admin-card"><h5>Total Users</h5><div class="value">12,847</div></div>
+                <div class="admin-card"><h5>Revenue</h5><div class="value">$48.2k</div></div>
+                <div class="admin-card"><h5>Conversion</h5><div class="value">3.8%</div></div>
+                <div class="admin-card" style="grid-column: span 2;"><h5>Recent Activity</h5>
+                  <p style="font-size:0.78rem; color:var(--text-muted); margin:0;">New user signed up • Order #1842 completed</p>
+                </div>
+                <div class="admin-card"><h5>Status</h5><div class="value" style="color:var(--success); font-size:0.95rem;">All systems go</div></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 23: Summary -->
+        <section class="slide" data-title="Summary" data-section="End">
+          <h2>Summary & Next Steps</h2>
+          <p>You now have a solid intermediate foundation with ready-to-use code for every topic.</p>
+
+          <div class="card-grid">
+            <div class="card">
+              <h4>HTML</h4>
+              <ul>
+                <li>SVG for scalable graphics</li>
+                <li>Proper semantic tables</li>
+                <li>Accessible forms</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h4>CSS Core</h4>
+              <ul>
+                <li>Units, custom properties, functions</li>
+                <li>Advanced selectors & positioning</li>
+                <li>Browser compatibility</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h4>Layout</h4>
+              <ul>
+                <li>CSS Grid for 2D layouts</li>
+                <li>Combining Grid + Flexbox</li>
+                <li>Real projects included</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="code-label">Recommended practice order</div>
+          <pre><code>1. Rebuild the sign-up form from scratch (no looking)
+2. Create a personal dashboard using only Grid + Flexbox
+3. Experiment with clamp(), :has(), and container queries
+4. Inspect a well-built open-source UI and study its CSS</code></pre>
+
+          <p style="margin-top:1.5rem; color:var(--accent); font-weight:600;">
+            You now have the tools and the code samples to build clean, modern, responsive interfaces. Keep practicing!
+          </p>
+        </section>
+
+      </div>
+
+      <!-- CONTROLS -->
+      <div class="controls">
+        <div class="progress-info">
+          <strong id="current-slide">1</strong> / <span id="total-slides">24</span>
+          <span class="keyboard-hint">Use <kbd>←</kbd> <kbd>→</kbd> or buttons</span>
+        </div>
+        <div class="btn-group">
+          <button class="btn" id="prev-btn" disabled>← Previous</button>
+          <button class="btn btn-primary" id="next-btn">Next →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const nav = document.getElementById('nav');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const currentEl = document.getElementById('current-slide');
+    const totalEl = document.getElementById('total-slides');
+
+    let current = 0;
+    totalEl.textContent = slides.length;
+
+    // Build navigation
+    const sections = {};
+    slides.forEach((slide, i) => {
+      const title = slide.dataset.title || `Slide ${i + 1}`;
+      const section = slide.dataset.section || 'General';
+      if (!sections[section]) sections[section] = [];
+      sections[section].push({ index: i, title });
+    });
+
+    Object.entries(sections).forEach(([sectionName, items]) => {
+      if (sectionName === 'General' || sectionName === 'End') {
+        items.forEach(item => {
+          const btn = document.createElement('button');
+          btn.className = 'nav-item' + (item.index === 0 ? ' active' : '');
+          btn.textContent = item.title;
+          btn.dataset.index = item.index;
+          btn.addEventListener('click', () => goTo(item.index));
+          nav.appendChild(btn);
+        });
+      } else {
+        const sectionDiv = document.createElement('div');
+        sectionDiv.className = 'nav-section';
+        const titleEl = document.createElement('div');
+        titleEl.className = 'nav-section-title';
+        titleEl.textContent = sectionName;
+        sectionDiv.appendChild(titleEl);
+        items.forEach(item => {
+          const btn = document.createElement('button');
+          btn.className = 'nav-item' + (item.index === 0 ? ' active' : '');
+          btn.textContent = item.title;
+          btn.dataset.index = item.index;
+          btn.addEventListener('click', () => goTo(item.index));
+          sectionDiv.appendChild(btn);
+        });
+        nav.appendChild(sectionDiv);
+      }
+    });
+
+    function goTo(index) {
+      if (index < 0 || index >= slides.length) return;
+      slides[current].classList.remove('active');
+      current = index;
+      slides[current].classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.index) === current);
+      });
+      currentEl.textContent = current + 1;
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === slides.length - 1;
+      slides[current].scrollTop = 0;
+    }
+
+    prevBtn.addEventListener('click', () => goTo(current - 1));
+    nextBtn.addEventListener('click', () => goTo(current + 1));
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        goTo(current + 1);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        goTo(current - 1);
+      }
+    });
+
+    document.getElementById('validation-demo')?.addEventListener('submit', e => {
+      e.preventDefault();
+      alert('Form is valid! (This is just a demo)');
+    });
+
+    document.getElementById('signup-form')?.addEventListener('submit', e => {
+      e.preventDefault();
+      const pass = document.getElementById('signup-password').value;
+      const confirm = document.getElementById('confirm-password').value;
+      if (pass !== confirm) {
+        alert('Passwords do not match');
+        return;
+      }
+      alert('Account created successfully! (Demo only)');
+    });
+  </script>
+</body>
+</html>
